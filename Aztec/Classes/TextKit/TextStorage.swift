@@ -109,6 +109,10 @@ open class TextStorage: NSTextStorage {
         stringCache = output
         return output
     }
+    
+    override open var length: Int {
+        return textStore.length
+    }
 
     open var mediaAttachments: [MediaAttachment] {
         let range = NSMakeRange(0, length)
