@@ -230,10 +230,9 @@ open class TextStorage: NSTextStorage {
 
     // MARK: - Overriden Methods
 
-    /// Retrieves the attributes for the requested character location.
-    ///
-    /// - Important: please note that this method returns the style at the character location, and
-    ///     NOT at the caret location.  For N characters we always have N+1 character locations.
+    /// Important:
+    /// This method returns the style at the character location, and NOT at the caret location. For N characters we always
+    /// have N+1 character locations.
     ///
     override open func attributes(at location: Int, effectiveRange range: NSRangePointer?) -> [NSAttributedStringKey : Any] {
 
