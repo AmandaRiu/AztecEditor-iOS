@@ -81,7 +81,13 @@ open class TextStorage: NSTextStorage {
 
     // MARK: - Storage
 
-    fileprivate var textStore = NSMutableAttributedString(string: "", attributes: nil)
+    fileprivate var textStore = NSMutableAttributedString(string: "", attributes: nil) {
+        didSet {
+            stringCache = nil
+        }
+    }
+
+    private var stringCache: String?
 
 
     // MARK: - Delegates
@@ -99,7 +105,9 @@ open class TextStorage: NSTextStorage {
     // MARK: - Calculated Properties
 
     override open var string: String {
-        return textStore.string
+        let output = stringCache ?? textStore.string
+        stringCache = output
+        return output
     }
 
     open var mediaAttachments: [MediaAttachment] {
@@ -237,6 +245,8 @@ open class TextStorage: NSTextStorage {
         beginEditing()
 
         detectAttachmentRemoved(in: range)
+        
+        stringCache = nil
         textStore.replaceCharacters(in: range, with: str)
 
         edited(.editedCharacters, range: range, changeInLength: str.count - range.length)
@@ -251,7 +261,10 @@ open class TextStorage: NSTextStorage {
         beginEditing()
 
         detectAttachmentRemoved(in: range)
+        
+        stringCache = nil
         textStore.replaceCharacters(in: range, with: preprocessedString)
+
         edited([.editedAttributes, .editedCharacters], range: range, changeInLength: attrString.length - range.length)
 
         endEditing()
@@ -262,7 +275,9 @@ open class TextStorage: NSTextStorage {
 
         let fixedAttributes = ensureMatchingFontAndParagraphHeaderStyles(beforeApplying: attrs ?? [:], at: range)
 
+        stringCache = nil
         textStore.setAttributes(fixedAttributes, range: range)
+
         edited(.editedAttributes, range: range, changeInLength: 0)
         
         endEditing()
